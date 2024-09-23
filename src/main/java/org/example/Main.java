@@ -5,6 +5,7 @@ import com.google.api.services.bigquery.model.TableRow;
 import com.google.api.services.bigquery.model.TableSchema;
 import org.apache.beam.runners.dataflow.DataflowRunner;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
+import org.apache.beam.runners.dataflow.options.DataflowPipelineWorkerPoolOptions;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.TableRowJsonCoder;
@@ -24,17 +25,16 @@ public class Main {
     public static void main(String[] args) {
 
         String driverConnection = "com.mysql.cj.jdbc.Driver";
-        String url = "jdbc:mysql:///dart_db?"
-                + "cloudSqlInstance=sunny-might-435812-p7:europe-west1:dart"
-                + "&socketFactory=com.google.cloud.sql.mysql.SocketFactory"
-                + "&user=dart_user"
-                + "&password=dart_user";
+        String url = "jdbc:mysql:///dart_db?cloudSqlInstance=sunny-might-435812-p7:europe-west1:dart" +
+                "&socketFactory=com.google.cloud.sql.mysql.SocketFactory" +
+                "&user=dart_user" +
+                "&password=dart_user";
         String username = "dart_user";
         String password = "dart_user";
         String outputDataset = "dart_test";
         String outputTable = "dart_table_bq";
         String projectOutput = "sunny-might-435812-p7";
-        String outputBucket = "dart_test_bucket_123";
+        String outputBucket = "dart_test_bucket_124";
 
         TableSchema schema = new TableSchema().setFields(Arrays.asList(
                 new TableFieldSchema().setName("cob_date_code").setType("STRING"),
@@ -46,14 +46,13 @@ public class Main {
 
         DataflowPipelineOptions pipelineOptions = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
         pipelineOptions.setProject(projectOutput);
-        pipelineOptions.setRegion("europe-west1");
+        pipelineOptions.setRegion("us-central1");
         pipelineOptions.setTempLocation("gs://" + outputBucket + "/temp");
         pipelineOptions.setRunner(DataflowRunner.class);
-
-        pipelineOptions.setNumWorkers(1);
-        pipelineOptions.setMaxNumWorkers(1);
+        pipelineOptions.setNumWorkers(2);
+        pipelineOptions.setMaxNumWorkers(5);
         pipelineOptions.setWorkerMachineType("n1-standard-1");
-        pipelineOptions.setAutoscalingAlgorithm(DataflowPipelineOptions.AutoscalingAlgorithmType.NONE);
+        pipelineOptions.setAutoscalingAlgorithm(DataflowPipelineWorkerPoolOptions.AutoscalingAlgorithmType.THROUGHPUT_BASED);
 
         Pipeline p = Pipeline.create(pipelineOptions);
         p.apply("Read from MySQL", JdbcIO.<TableRow>read()
@@ -86,7 +85,7 @@ public class Main {
                         .withSchema(schema)
                         .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
                         .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_APPEND)
-                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of(outputBucket))
+                        .withCustomGcsTempLocation(ValueProvider.StaticValueProvider.of("gs://" + outputBucket + "/bigquery_temp"))
                 );
 
         p.run().waitUntilFinish();
