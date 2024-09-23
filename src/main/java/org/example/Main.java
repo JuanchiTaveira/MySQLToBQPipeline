@@ -48,6 +48,7 @@ public class Main {
         pipelineOptions.setProject(projectOutput);
         pipelineOptions.setRegion("us-central1");
         pipelineOptions.setTempLocation("gs://" + outputBucket + "/temp");
+        pipelineOptions.setStagingLocation("gs://" + outputBucket + "/staging");
         pipelineOptions.setRunner(DataflowRunner.class);
         pipelineOptions.setNumWorkers(2);
         pipelineOptions.setMaxNumWorkers(5);
