@@ -25,7 +25,7 @@ public class Main {
     public static void main(String[] args) {
 
         String driverConnection = "com.mysql.cj.jdbc.Driver";
-        String url = "jdbc:mysql:///dartdb?cloudSqlInstance=spa-newlearningdev-dev-001:europe-west2:dartdb" +
+        String url = "jdbc:mysql:///dart_db?cloudSqlInstance=spa-newlearningdev-dev-001:europe-west2:dartdb" +
                 "&socketFactory=com.google.cloud.sql.mysql.SocketFactory" +
                 "&user=dart_user" +
                 "&password=dart_user";
