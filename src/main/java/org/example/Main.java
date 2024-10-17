@@ -25,7 +25,7 @@ public class Main {
     public static void main(String[] args) {
 
         String driverConnection = "com.mysql.cj.jdbc.Driver";
-        String url = "jdbc:mysql:///dart_db?cloudSqlInstance=sunny-might-435812-p7:europe-west1:dart" +
+        String url = "jdbc:mysql:///dartdb?cloudSqlInstance=spa-newlearningdev-dev-001:europe-west2:dartdb" +
                 "&socketFactory=com.google.cloud.sql.mysql.SocketFactory" +
                 "&user=dart_user" +
                 "&password=dart_user";
@@ -33,8 +33,8 @@ public class Main {
         String password = "dart_user";
         String outputDataset = "dart_test";
         String outputTable = "dart_table_bq";
-        String projectOutput = "sunny-might-435812-p7";
-        String outputBucket = "dart_test_bucket_124";
+        String projectOutput = "spa-newlearningdev-dev-001";
+        String outputBucket = "dart_test_bucket_125";
 
         TableSchema schema = new TableSchema().setFields(Arrays.asList(
                 new TableFieldSchema().setName("cob_date_code").setType("STRING"),
@@ -46,7 +46,7 @@ public class Main {
 
         DataflowPipelineOptions pipelineOptions = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
         pipelineOptions.setProject(projectOutput);
-        pipelineOptions.setRegion("us-central1");
+        pipelineOptions.setRegion("europe-west2");
         pipelineOptions.setTempLocation("gs://" + outputBucket + "/temp");
         pipelineOptions.setStagingLocation("gs://" + outputBucket + "/staging");
         pipelineOptions.setRunner(DataflowRunner.class);
